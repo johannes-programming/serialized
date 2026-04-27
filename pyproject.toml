@@ -19,7 +19,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "cmp3>=1.0.3,<2",
+    "cmp3>=1.0,<2",
     "copyable>=1.0,<2",
     "datarepr>=1.1,<2",
     "iterflat>=1.0,<2",
@@ -30,7 +30,7 @@ keywords = []
 name = "serialized"
 readme = "README.rst"
 requires-python = ">=3.11"
-version = "0.1.4.dev0"
+version = "0.1.4"
 
 [project.license]
 file = "LICENSE.txt"
