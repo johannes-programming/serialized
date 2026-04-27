@@ -3,6 +3,7 @@ from abc import abstractmethod
 from typing import *
 
 import cmp3
+import setdoc
 from datarepr import datarepr
 from iterflat import iterflat
 
@@ -30,6 +31,10 @@ class BaseSeries(cmp3.CmpABC, collections.abc.Mapping[str, Value]):
         return item in self.items()
 
     __format__ = object.__format__
+
+    @setdoc.basic
+    def __getitem__(self: Self, key: Any) -> Any:
+        return self._data[str(key)]
 
     @abstractmethod
     def __hash__(self: Self) -> int: ...
