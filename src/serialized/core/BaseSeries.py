@@ -39,7 +39,7 @@ class BaseSeries(cmp3.CmpABC, collections.abc.Mapping[str, Value]):
     @abstractmethod
     def __hash__(self: Self) -> int: ...
 
-    def __init__(self: Self, data: Any, /, **kwargs: Any) -> None:
+    def __init__(self: Self, data: Any = (), /, **kwargs: Any) -> None:
         self._data = dict(getitems(data, **kwargs))
 
     def __iter__(self: Self) -> Iterable:
