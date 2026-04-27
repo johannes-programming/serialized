@@ -17,11 +17,13 @@ Value = TypeVar("Value")
 class BaseSeries(cmp3.CmpABC, collections.abc.Mapping[str, Value]):
     __slots__ = ("_data",)
 
+    @setdoc.basic
     def __cmp__(self: Self, other: Any) -> Any:
         if type(self) is not type(other):
             return
         return cmp3.cmp(self._data, other._data, mode="eq")
 
+    @setdoc.basic
     def __contains__(self: Self, other: Any) -> bool:
         item: tuple[str, Any]
         try:
@@ -37,23 +39,30 @@ class BaseSeries(cmp3.CmpABC, collections.abc.Mapping[str, Value]):
         return self._data[str(key)]
 
     @abstractmethod
+    @setdoc.basic
     def __hash__(self: Self) -> int: ...
 
+    @setdoc.basic
     def __init__(self: Self, data: Any = (), /, **kwargs: Any) -> None:
         self._data = dict(getitems(data, **kwargs))
 
+    @setdoc.basic
     def __iter__(self: Self) -> Iterable:
         return self._data.items()
 
+    @setdoc.basic
     def __len__(self: Self) -> int:
         return len(self._data)
 
+    @setdoc.basic
     def __or__(self: Self, other: Any) -> Self:
         return type(self)(iterflat((self._data.items(), getitems(other))))
 
+    @setdoc.basic
     def __repr__(self: Self) -> str:
         return datarepr(type(self).__name__, self._data)
 
+    @setdoc.basic
     def __reversed__(self: Self) -> Iterable:
         yield from reversed(self._data.items())
 
