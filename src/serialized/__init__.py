@@ -1,5 +1,2 @@
-from serialized.core import *
-from serialized.tests import *
-
-if __name__ == "__main__":
-    main()
+from serialized.core.FrozenSeries import FrozenSeries
+from serialized.core.Series import Series

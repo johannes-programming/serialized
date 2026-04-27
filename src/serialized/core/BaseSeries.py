@@ -1,8 +1,8 @@
 import collections.abc
 from abc import abstractmethod
+from itertools import repeat
 from typing import *
 
-import cmp3
 import setdoc
 from datarepr import datarepr
 from iterflat import iterflat
@@ -14,14 +14,8 @@ __all__ = ["BaseSeries"]
 Value = TypeVar("Value")
 
 
-class BaseSeries(cmp3.CmpABC, collections.abc.Mapping[str, Value]):
+class BaseSeries(collections.abc.Mapping[str, Value]):
     __slots__ = ("_data",)
-
-    @setdoc.basic
-    def __cmp__(self: Self, other: Any) -> Any:
-        if type(self) is not type(other):
-            return
-        return cmp3.cmp(self._data, other._data, mode="eq")
 
     @setdoc.basic
     def __contains__(self: Self, other: Any) -> bool:
@@ -31,6 +25,14 @@ class BaseSeries(cmp3.CmpABC, collections.abc.Mapping[str, Value]):
         except Exception:
             return False
         return item in self.items()
+
+    @setdoc.basic
+    def __eq__(self: Self, other: Any) -> Optional[int]:
+        if type(self) is not type(other):
+            return False
+        if self._data != other._data:
+            return False
+        return True
 
     __format__ = object.__format__
 
@@ -47,8 +49,8 @@ class BaseSeries(cmp3.CmpABC, collections.abc.Mapping[str, Value]):
         self._data = dict(getitems(data, **kwargs))
 
     @setdoc.basic
-    def __iter__(self: Self) -> Iterable:
-        return self._data.items()
+    def __iter__(self: Self) -> Iterable[tuple[str, Value]]:
+        yield from self._data.items()
 
     @setdoc.basic
     def __len__(self: Self) -> int:
@@ -70,7 +72,7 @@ class BaseSeries(cmp3.CmpABC, collections.abc.Mapping[str, Value]):
 
     @classmethod
     def fromkeys(cls: type[Self], keys: Iterable, value: Value = None, /):
-        return cls(dict.fromkeys(keys, value))
+        return cls(zip(map(str, keys), repeat(value)))
 
     def get(self: Self, key: Any, default: Any = None, /) -> Value:
         return self._data.get(str(key), default)
