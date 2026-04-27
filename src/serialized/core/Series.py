@@ -4,7 +4,7 @@ from typing import *
 import setdoc
 from copyable import Copyable
 
-from serialized._utils import getitem, getitems
+from serialized._utils import getitems
 from serialized.core.BaseSeries import BaseSeries
 
 __all__ = ["Series"]

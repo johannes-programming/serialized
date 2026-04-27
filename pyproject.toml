@@ -18,13 +18,18 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
     "Typing :: Typed",
 ]
-dependencies = []
+dependencies = [
+    "copyable>=1.0.1,<2",
+    "datarepr>=1.1.4,<2",
+    "iterflat>=1.0.0,<2",
+    "setdoc>=1.2.12,<2",
+]
 description = "serialized"
 keywords = []
 name = "serialized"
 readme = "README.rst"
 requires-python = ">=3.11"
-version = "0.1.0"
+version = "0.1.1"
 
 [project.license]
 file = "LICENSE.txt"
