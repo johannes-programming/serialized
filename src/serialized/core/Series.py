@@ -49,4 +49,3 @@ class Series(BaseSeries[Value], Copyable, collections.abc.MutableMapping):
 
     def update(self: Self, data: Any, /, **kwargs: Any) -> None:
         self._data.update(getitems(data, **kwargs))
-        return self
