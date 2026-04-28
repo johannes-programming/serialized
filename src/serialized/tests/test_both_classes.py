@@ -7,11 +7,12 @@ from serialized.core.Series import Series
 __all__ = ["Test0"]
 
 
-class Test0(unittest.TestCase):
-    def test_classes(self: Self) -> None:
+class TestBothClasses(unittest.TestCase):
+    def test_both_classes(self: Self) -> None:
         for cls in (FrozenSeries, Series):
             self.dunder(cls)
             self.method(cls)
+            self.slots(cls)
 
     def dunder(self: Self, cls: type) -> None:
         self.dunder_contains(cls)
@@ -122,6 +123,12 @@ class Test0(unittest.TestCase):
         obj: Any
         obj = cls([["hello", "world"], [4, 2]])
         self.assertEqual(list(obj.values()), ["world", 2])
+
+    def slots(self: Self, cls: type) -> None:
+        obj: Any
+        obj = cls([["hello", "world"], [4, 2]])
+        with self.assertRaises(Exception):
+            obj.foo = 42
 
 
 if __name__ == "__main__":
