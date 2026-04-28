@@ -1,10 +1,12 @@
 import collections.abc
+from itertools import starmap
 from typing import *
 
 import setdoc
 from copyable import Copyable
+from iterflat import iterflat
 
-from serialized._utils import getitems
+from serialized._utils import getitem
 from serialized.core.BaseSeries import BaseSeries
 
 __all__ = ["Series"]
@@ -24,7 +26,7 @@ class Series(BaseSeries[Value], Copyable, collections.abc.MutableMapping):
 
     @setdoc.basic
     def __ior__(self: Self, other: Any) -> Self:
-        self._data |= getitems(other)
+        self._data |= starmap(getitem, other)
         return self
 
     @setdoc.basic
@@ -48,4 +50,4 @@ class Series(BaseSeries[Value], Copyable, collections.abc.MutableMapping):
         return self._data.popitem()
 
     def update(self: Self, data: Any, /, **kwargs: Any) -> None:
-        self._data.update(getitems(data, **kwargs))
+        self._data.update(starmap(getitem, iterflat(data, kwargs.items())))

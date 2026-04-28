@@ -1,13 +1,13 @@
 import collections.abc
 from abc import abstractmethod
-from itertools import repeat
+from itertools import repeat, starmap
 from typing import *
 
 import setdoc
 from datarepr import datarepr
 from iterflat import iterflat
 
-from serialized._utils import getitem, getitems
+from serialized._utils import getitem
 
 __all__ = ["BaseSeries"]
 
@@ -46,7 +46,7 @@ class BaseSeries(collections.abc.Mapping[str, Value]):
 
     @setdoc.basic
     def __init__(self: Self, data: Any = (), /, **kwargs: Any) -> None:
-        self._data = dict(getitems(data, **kwargs))
+        self._data = dict(starmap(getitem, iterflat((data, kwargs.items()))))
 
     @setdoc.basic
     def __iter__(self: Self) -> Iterable[tuple[str, Value]]:
@@ -58,7 +58,7 @@ class BaseSeries(collections.abc.Mapping[str, Value]):
 
     @setdoc.basic
     def __or__(self: Self, other: Any) -> Self:
-        return type(self)(iterflat((self._data.items(), getitems(other))))
+        return type(self)(iterflat((self._data.items(), other)))
 
     @setdoc.basic
     def __repr__(self: Self) -> str:
