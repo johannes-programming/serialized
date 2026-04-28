@@ -38,7 +38,7 @@ class BaseSeries(collections.abc.Mapping[str, Value]):
         try:
             return self._data[x]
         except KeyError:
-            raise KeyError("The key %r does not exist." % x) from None
+            raise KeyError("Key %r unknown." % key) from None
 
     @abstractmethod
     @setdoc.basic

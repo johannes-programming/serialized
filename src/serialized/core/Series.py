@@ -17,7 +17,10 @@ class Series(BaseSeries[Value], Copyable, collections.abc.MutableMapping[Value])
 
     @setdoc.basic
     def __delitem__(self: Self, key: Any) -> None:
-        del self._data[str(key)]
+        try:
+            del self._data[str(key)]
+        except KeyError:
+            raise KeyError("Key %r unknown." % key)
 
     __hash__ = None
 
@@ -56,6 +59,9 @@ class Series(BaseSeries[Value], Copyable, collections.abc.MutableMapping[Value])
     def popitem(self: Self) -> tuple[str, Value]:
         "This method deletes and returns the last key-value-pair."
         return self._data.popitem()
+
+    def setdefault(self: Self, key: Any, default: Value = None) -> Value:
+        return self._data.setdefault(str(key), default)
 
     def update(self: Self, data: Iterable, /, **kwargs: Any) -> None:
         "This method updates the key-value-pairs."
