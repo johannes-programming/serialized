@@ -1,13 +1,11 @@
 import collections.abc
 from abc import abstractmethod
-from itertools import repeat, starmap
+from itertools import repeat
 from typing import *
 
 import setdoc
 from datarepr import datarepr
 from iterflat import iterflat
-
-from serialized._utils import getitem
 
 __all__ = ["BaseSeries"]
 
@@ -19,34 +17,42 @@ class BaseSeries(collections.abc.Mapping[str, Value]):
 
     @setdoc.basic
     def __contains__(self: Self, other: Any) -> bool:
-        item: tuple[str, Any]
+        x: Any
+        y: Any
         try:
-            item = getitem(*other)
+            x, y = other
+            return (str(x), y) in self._data.items()
         except Exception:
             return False
-        return item in self.items()
 
     @setdoc.basic
     def __eq__(self: Self, other: Any) -> Optional[int]:
-        if type(self) is not type(other):
-            return False
-        if self._data != other._data:
-            return False
-        return True
-
-    __format__ = object.__format__
+        return type(self) is type(other) and tuple(self._data.items()) == tuple(
+            other._data.items()
+        )
 
     @setdoc.basic
     def __getitem__(self: Self, key: Any) -> Any:
-        return self._data[str(key)]
+        x: str
+        x = str(key)
+        try:
+            return self._data[x]
+        except KeyError:
+            raise KeyError("The key %r does not exist." % x) from None
 
     @abstractmethod
     @setdoc.basic
     def __hash__(self: Self) -> int: ...
 
     @setdoc.basic
-    def __init__(self: Self, data: Any = (), /, **kwargs: Any) -> None:
-        self._data = dict(starmap(getitem, iterflat((data, kwargs.items()))))
+    def __init__(self: Self, items: Iterable[Iterable] = (), /, **kwargs: Any) -> None:
+        i: Iterable
+        x: Any
+        y: Any
+        self._data = dict[str, Any]()
+        for i in (items, kwargs.items()):
+            for x, y in i:
+                self._data[str(x)] = y
 
     @setdoc.basic
     def __iter__(self: Self) -> Iterable[tuple[str, Value]]:
@@ -57,7 +63,7 @@ class BaseSeries(collections.abc.Mapping[str, Value]):
         return len(self._data)
 
     @setdoc.basic
-    def __or__(self: Self, other: Any) -> Self:
+    def __or__(self: Self, other: Iterable[Iterable]) -> Self:
         return type(self)(iterflat((self._data.items(), other)))
 
     @setdoc.basic
@@ -65,23 +71,25 @@ class BaseSeries(collections.abc.Mapping[str, Value]):
         return datarepr(type(self).__name__, self._data)
 
     @setdoc.basic
-    def __reversed__(self: Self) -> Iterable:
+    def __reversed__(self: Self) -> Iterator[tuple[str, Value]]:
         yield from reversed(self._data.items())
 
-    __str__ = object.__str__
-
     @classmethod
-    def fromkeys(cls: type[Self], keys: Iterable, value: Value = None, /):
+    def fromkeys(cls: type[Self], keys: Iterable, value: Value = None, /) -> Self:
         return cls(zip(map(str, keys), repeat(value)))
 
     def get(self: Self, key: Any, default: Any = None, /) -> Value:
+        "This method returns the value for an existing key or default for a not existing key."
         return self._data.get(str(key), default)
 
-    def keys(self: Self) -> Iterable[str]:
+    def keys(self: Self) -> Iterator[str]:
+        "This method returns an iterable of the keys."
         yield from self._data.keys()
 
-    def items(self: Self) -> Iterable[tuple[str, Value]]:
+    def items(self: Self) -> Iterator[tuple[str, Value]]:
+        "This method returns an iterable of the key-value-pairs."
         yield from self._data.items()
 
-    def values(self: Self) -> Iterable[Value]:
+    def values(self: Self) -> Iterator[Value]:
+        "This method returns an iterable of the values."
         yield from self._data.values()
