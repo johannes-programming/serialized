@@ -15,7 +15,7 @@ MISSING = object()
 Value = TypeVar("Value")
 
 
-class Series(BaseSeries[Value], Copyable, collections.abc.MutableMapping):
+class Series(BaseSeries[Value], Copyable, collections.abc.MutableMapping[Value]):
     __slots__ = ()
 
     @setdoc.basic
