@@ -62,6 +62,8 @@ class BaseSeries(collections.abc.Mapping[str, Value]):
     def __len__(self: Self) -> int:
         return len(self._data)
 
+    __ne__ = object.__ne__
+
     @setdoc.basic
     def __or__(self: Self, other: Iterable[Iterable]) -> Self:
         return type(self)(iterflat((self._data.items(), other)))

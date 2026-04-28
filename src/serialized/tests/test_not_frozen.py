@@ -21,6 +21,16 @@ class TestNotFrozen(unittest.TestCase):
         objA.clear()
         self.assertEqual(list(objA), [])
 
+    def test_pop(self: Self) -> None:
+        obj: Series
+        obj = Series([["hello", "world"], [4, 2]])
+        with self.assertRaises(Exception):
+            obj.pop("foo")
+        self.assertEqual(obj.pop("foo", "bar"), "bar")
+        self.assertEqual(list(obj), [("hello", "world"), ("4", 2)])
+        self.assertEqual(obj.pop("hello", "bar"), "world")
+        self.assertEqual(list(obj), [("4", 2)])
+
     def test_popitem(self: Self) -> None:
         obj: Series
         obj = Series([["hello", "world"], [4, 2]])
